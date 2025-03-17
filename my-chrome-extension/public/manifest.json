@@ -1,0 +1,10 @@
+{
+  "manifest_version": 3,
+  "name": "Email Guard",
+  "version": "1.0.0",
+  "description": "Your inbox, intelligently secure.",
+  "action": {
+    "default_popup": "index.html"
+  },
+  "permissions": []
+}

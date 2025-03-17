@@ -1,0 +1,23 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "npm",
+			"script": "build",
+			"path": "my-chrome-extension",
+			"group": "build",
+			"problemMatcher": [],
+			"label": "npm: build - my-chrome-extension",
+			"detail": "vite build"
+		},
+		{
+			"type": "npm",
+			"script": "install",
+			"path": "my-chrome-extension",
+			"group": "clean",
+			"problemMatcher": [],
+			"label": "npm: install - my-chrome-extension",
+			"detail": "install dependencies from package"
+		}
+	]
+}
