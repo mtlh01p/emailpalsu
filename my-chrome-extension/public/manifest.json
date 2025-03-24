@@ -1,10 +1,25 @@
 {
   "manifest_version": 3,
-  "name": "Email Guard",
-  "version": "1.0.0",
-  "description": "Your inbox, intelligently secure.",
-  "action": {
-    "default_popup": "index.html"
+  "name": "Email Phishing Checker",
+  "version": "1.0",
+  "permissions": [
+      "scripting",
+      "activeTab"
+  ],
+  "host_permissions": [
+      "https://*/*"
+  ],
+  "background": {
+     "service_worker": "background.js"
   },
-  "permissions": []
+  "content_scripts": [
+      {
+          "matches": ["https://*/*"],
+          "js": ["content.js"]
+      }
+  ],
+  "action": {
+      "default_popup": "index.html"
+  }
+  
 }
