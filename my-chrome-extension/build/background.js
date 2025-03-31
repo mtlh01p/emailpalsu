@@ -1,19 +1,52 @@
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  if (message.action === 'startAnalysis' && message.text) {
-    console.log("Message received in background script:", message);
+// background.js
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  if (request.action === "checkFactuality") {
+      fetch("http://localhost:5000/check", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ text: request.text })
+      })
+      .then(response => {
+          if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          return response.json();
+      })
+      .then(data => {
+          sendResponse(data); // Send the response here!
+      })
+      .catch(error => {
+          console.error("Error:", error);
+          sendResponse({ error: "Failed to process the request" }); // Send error response
+      });
+      return true; // Indicate asynchronous response
+  }
+});
 
-    // Forward the message to the content script
-    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-      if (tabs.length > 0) {
-        chrome.tabs.sendMessage(tabs[0].id, message, (response) => {
-          sendResponse(response);
-        });
+chrome.runtime.onInstalled.addListener(() => {
+  chrome.contextMenus.create({
+      id: "analyse-text",
+      title: "Analyse",
+      contexts: ["selection"],
+  }, () => {
+      if (chrome.runtime.lastError) {
+          console.error("Context menu creation failed:", chrome.runtime.lastError);
       } else {
-        console.error("No active tab found.");
-        sendResponse({ error: "No active tab available." });
+          console.log("Context menu created successfully!");
       }
-    });
+  });
+});
 
-    return true; // Keep the messaging channel open for asynchronous response
+chrome.contextMenus.onClicked.addListener((info, tab) => {
+  if (info.menuItemId === "analyse-text" && info.selectionText) {
+      chrome.scripting.executeScript(
+          {
+              target: { tabId: tab.id },
+              files: ["content.js"],
+          },
+          () => {
+              chrome.tabs.sendMessage(tab.id, { action: "analyseText", text: info.selectionText });
+          }
+      );
   }
 });

@@ -2,19 +2,21 @@
   "manifest_version": 3,
   "name": "Email Phishing Checker",
   "version": "1.0",
-  "permissions": [
-      "scripting",
-      "activeTab"
-  ],
-  "host_permissions": [
-      "https://*/*"
-  ],
+"permissions": [
+  "activeTab",
+  "scripting",
+  "contextMenus"
+],
+"host_permissions": [
+    "https://*/*",
+    "http://localhost/*"
+],
   "background": {
      "service_worker": "background.js"
   },
   "content_scripts": [
       {
-          "matches": ["https://*/*"],
+          "matches": ["<all_urls>"],
           "js": ["content.js"]
       }
   ],
